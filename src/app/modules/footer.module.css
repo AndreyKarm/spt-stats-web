@@ -1,0 +1,22 @@
+.footerContainer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: white;
+    text-align: center;
+    padding: 1em 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.footerContainer div {
+    width: 80%;
+    font-size: 1.2em;
+    color: black;
+}
+
+.footerContainer div a {
+    margin: 0 2em;
+}
