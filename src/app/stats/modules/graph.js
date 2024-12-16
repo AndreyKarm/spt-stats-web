@@ -10,7 +10,7 @@ const Graph = ({ timeRange, selectedStats }) => {
     const fetchData = async () => {
         const dateRange = calculateDateRange(timeRange);
         try {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL;
             const response = await fetch(`${apiUrl}/data`, {
                 method: 'POST',
                 headers: {
@@ -46,32 +46,43 @@ const Graph = ({ timeRange, selectedStats }) => {
 
     
     const getChartOptions = (apiData) => {
-        console.log(apiData.series);
-        return {
-            title: {
+    return {
+        title: {
             text: 'Stats Over Time'
-            },
-            tooltip: {
-            trigger: 'axis'
-            },
-            legend: {
+        },
+        tooltip: {
+            trigger: 'axis',
+            formatter: function(params) {
+                let result = params[0].axisValueLabel + '<br/>';
+                params.forEach(param => {
+                    result += param.marker + param.seriesName + ': ' + param.value.toLocaleString() + '<br/>';
+                });
+                return result;
+            }
+        },
+        legend: {
             data: apiData.legend.data
-            },
-            xAxis: {
+        },
+        xAxis: {
             type: 'category',
             boundaryGap: false,
             data: apiData.xAxis.data
-            },
-            yAxis: {
-            type: 'value'
-            },
-            series: apiData.series.map(series => ({
-                ...series,
-                type: 'line',
-                stack: 'Total'
-            }))
-        };
+        },
+        yAxis: {
+            type: 'value',
+            axisLabel: {
+                formatter: value => value.toLocaleString()
+            }
+        },
+        series: apiData.series.map(series => ({
+            ...series,
+            type: 'line',
+            // Remove stack property
+            smooth: true,
+            showSymbol: false
+        }))
     };
+};
 
     useEffect(() => {
         const loadChartData = async () => {
